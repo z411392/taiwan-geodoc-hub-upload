@@ -1,0 +1,6 @@
+*
+!pyproject.toml
+!src/main.py
+!src/taiwan_geodoc_hub
+!prefect.toml
+**/__pycache__/
