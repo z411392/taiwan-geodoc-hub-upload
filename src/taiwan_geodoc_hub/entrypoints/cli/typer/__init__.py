@@ -1,0 +1,23 @@
+from typer import Typer
+from click.core import Context
+from taiwan_geodoc_hub.utils.asyncio import ensure_event_loop
+from taiwan_geodoc_hub.utils.lifespan import startup
+from taiwan_geodoc_hub.utils.lifespan import shutdown
+from atexit import register
+from taiwan_geodoc_hub.entrypoints.cli.typer.auth import auth
+from taiwan_geodoc_hub.modules.system_maintaining.presentation.cli.handlers.handle_help import (
+    handle_help,
+)
+
+app = Typer()
+
+
+@app.callback()
+def bootstrap(context: Context):
+    loop = ensure_event_loop()
+    context.obj = loop.run_until_complete(startup())
+    register(lambda: loop.run_until_complete(shutdown()))
+
+
+app.command(name="help")(handle_help)
+app.add_typer(auth)
